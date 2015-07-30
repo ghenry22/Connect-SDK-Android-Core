@@ -3107,4 +3107,10 @@ public class WebOSTVService extends DeviceService implements Launcher, MediaCont
     public static interface ServiceInfoListener extends ResponseListener<JSONArray> { }
 
     public static interface SystemInfoListener extends ResponseListener<JSONObject> { }
+    
+	@Override
+	public void leaveMedia(LaunchSession launchSession,
+			ResponseListener<Object> listener) {
+		closeMedia(launchSession, listener);
+	}
 }

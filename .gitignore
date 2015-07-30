@@ -4,6 +4,7 @@
 *.class
 bin/
 gen/
+target/
 .gradle/
 build/
 local.properties

@@ -20,6 +20,27 @@
 
 package com.connectsdk.service;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.StringTokenizer;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.UUID;
+
+import org.apache.http.protocol.HTTP;
+import org.json.JSONObject;
+
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
@@ -44,27 +65,6 @@ import com.connectsdk.service.config.ServiceConfig;
 import com.connectsdk.service.config.ServiceDescription;
 import com.connectsdk.service.sessions.LaunchSession;
 import com.connectsdk.service.sessions.LaunchSession.LaunchSessionType;
-
-import org.apache.http.protocol.HTTP;
-import org.json.JSONObject;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URL;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.StringTokenizer;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.UUID;
 
 public class AirPlayService extends DeviceService implements MediaPlayer, MediaControl {
     public static final String X_APPLE_SESSION_ID = "X-Apple-Session-ID";
@@ -776,5 +776,9 @@ public class AirPlayService extends DeviceService implements MediaPlayer, MediaC
         timer = null;
     }
 
-
+	@Override
+	public void leaveMedia(LaunchSession launchSession,
+			ResponseListener<Object> listener) {
+		closeMedia(launchSession, listener);
+	}
 }

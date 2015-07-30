@@ -21,14 +21,13 @@
 package com.connectsdk.core;
 
 import java.util.ArrayList;
-
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 /**
  * Normalized reference object for information about a media to display. This object can be used to pass as a parameter to displayImage or playMedia.
  * 
  */
-
-import java.util.Collections;
-import java.util.List;
 
 public class MediaInfo {
 
@@ -62,6 +61,22 @@ public class MediaInfo {
         this(url, mimeType, title, description);
         this.allImages = allImages;
     }
+    
+    /**
+     * MediaInfo constructor with a list of icons URLs.
+     *
+     * @param url media file
+     * @param mimeType media mime type
+     * @param title optional metadata
+     * @param description optional metadata
+     * @param allImages list of imageInfo objects where [0] is icon, [1] is poster
+     * @param metadata dictionary of string key value
+     */
+    public MediaInfo(Map<String, String> metadata, String url, String mimeType, String title, String description,
+                     List<ImageInfo> allImages) {
+        this(url, mimeType, title, description, allImages);
+        this.metadata = metadata;
+    }
 
     // @cond INTERNAL
     private String url, mimeType, description, title;
@@ -69,6 +84,8 @@ public class MediaInfo {
     private List<ImageInfo> allImages;
 
     private long duration;
+    
+    private Map<String, String> metadata;
 
     // @endcond
 
@@ -78,6 +95,10 @@ public class MediaInfo {
      * 
      */
 
+    public Map<String, String> getMetadata() {
+    	return metadata;
+    }
+    
     public String getMimeType() {
         return mimeType;
     }

@@ -20,43 +20,6 @@
 
 package com.connectsdk.service;
 
-import android.content.Context;
-import android.text.Html;
-import android.util.Log;
-import android.util.Xml;
-
-import com.connectsdk.core.ImageInfo;
-import com.connectsdk.core.MediaInfo;
-import com.connectsdk.core.Util;
-import com.connectsdk.discovery.DiscoveryFilter;
-import com.connectsdk.discovery.DiscoveryManager;
-import com.connectsdk.discovery.provider.ssdp.Service;
-import com.connectsdk.etc.helper.DeviceServiceReachability;
-import com.connectsdk.etc.helper.HttpConnection;
-import com.connectsdk.service.capability.CapabilityMethods;
-import com.connectsdk.service.capability.MediaControl;
-import com.connectsdk.service.capability.MediaPlayer;
-import com.connectsdk.service.capability.PlaylistControl;
-import com.connectsdk.service.capability.VolumeControl;
-import com.connectsdk.service.capability.listeners.ResponseListener;
-import com.connectsdk.service.command.ServiceCommand;
-import com.connectsdk.service.command.ServiceCommandError;
-import com.connectsdk.service.command.ServiceSubscription;
-import com.connectsdk.service.command.URLServiceSubscription;
-import com.connectsdk.service.config.ServiceConfig;
-import com.connectsdk.service.config.ServiceDescription;
-import com.connectsdk.service.sessions.LaunchSession;
-import com.connectsdk.service.sessions.LaunchSession.LaunchSessionType;
-import com.connectsdk.service.upnp.DLNAHttpServer;
-import com.connectsdk.service.upnp.DLNAMediaInfoParser;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.xmlpull.v1.XmlPullParser;
-
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -87,6 +50,43 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.xmlpull.v1.XmlPullParser;
+
+import android.content.Context;
+import android.text.Html;
+import android.util.Log;
+import android.util.Xml;
+
+import com.connectsdk.core.ImageInfo;
+import com.connectsdk.core.MediaInfo;
+import com.connectsdk.core.Util;
+import com.connectsdk.discovery.DiscoveryFilter;
+import com.connectsdk.discovery.DiscoveryManager;
+import com.connectsdk.discovery.provider.ssdp.Service;
+import com.connectsdk.etc.helper.DeviceServiceReachability;
+import com.connectsdk.etc.helper.HttpConnection;
+import com.connectsdk.service.capability.CapabilityMethods;
+import com.connectsdk.service.capability.MediaControl;
+import com.connectsdk.service.capability.MediaPlayer;
+import com.connectsdk.service.capability.PlaylistControl;
+import com.connectsdk.service.capability.VolumeControl;
+import com.connectsdk.service.capability.listeners.ResponseListener;
+import com.connectsdk.service.command.ServiceCommand;
+import com.connectsdk.service.command.ServiceCommandError;
+import com.connectsdk.service.command.ServiceSubscription;
+import com.connectsdk.service.command.URLServiceSubscription;
+import com.connectsdk.service.config.ServiceConfig;
+import com.connectsdk.service.config.ServiceDescription;
+import com.connectsdk.service.sessions.LaunchSession;
+import com.connectsdk.service.sessions.LaunchSession.LaunchSessionType;
+import com.connectsdk.service.upnp.DLNAHttpServer;
+import com.connectsdk.service.upnp.DLNAMediaInfoParser;
 
 
 public class DLNAService extends DeviceService implements PlaylistControl, MediaControl, MediaPlayer, VolumeControl {
@@ -1376,4 +1376,10 @@ public class DLNAService extends DeviceService implements PlaylistControl, Media
         return request;
     }
 
+	@Override
+	public void leaveMedia(LaunchSession launchSession,
+			ResponseListener<Object> listener) {
+		closeMedia(launchSession, listener);
+	}
+	
 }

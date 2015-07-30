@@ -82,6 +82,8 @@ public interface MediaPlayer extends CapabilityMethods {
 
     public void closeMedia(LaunchSession launchSession, ResponseListener<Object> listener);
 
+    public void leaveMedia(LaunchSession launchSession, ResponseListener<Object> listener);
+    
     /**
      * This method is deprecated.
      * Use `MediaPlayer#displayImage(MediaInfo mediaInfo, LaunchListener listener)` instead.

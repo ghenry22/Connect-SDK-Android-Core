@@ -241,6 +241,7 @@ public interface MediaControl extends CapabilityMethods {
      */
     public static interface PlayStateListener extends ResponseListener<PlayStateStatus> { }
 
+     
     /**
      * Success block that is called upon successfully getting the media file's current playhead position.
      *

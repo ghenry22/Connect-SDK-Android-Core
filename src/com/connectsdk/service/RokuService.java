@@ -20,6 +20,24 @@
 
 package com.connectsdk.service;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.xml.sax.SAXException;
+
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -49,24 +67,6 @@ import com.connectsdk.service.config.ServiceConfig;
 import com.connectsdk.service.config.ServiceDescription;
 import com.connectsdk.service.roku.RokuApplicationListParser;
 import com.connectsdk.service.sessions.LaunchSession;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.xml.sax.SAXException;
-
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URI;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
 
 public class RokuService extends DeviceService implements Launcher, MediaPlayer, MediaControl, KeyControl, TextInputControl {
 
@@ -1117,4 +1117,10 @@ public class RokuService extends DeviceService implements Launcher, MediaPlayer,
 
         return dialService;
     }
+    
+	@Override
+	public void leaveMedia(LaunchSession launchSession,
+			ResponseListener<Object> listener) {
+		closeMedia(launchSession, listener);
+	}
 }

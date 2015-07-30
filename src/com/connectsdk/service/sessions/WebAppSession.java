@@ -20,6 +20,8 @@
 
 package com.connectsdk.service.sessions;
 
+import org.json.JSONObject;
+
 import com.connectsdk.core.MediaInfo;
 import com.connectsdk.core.Util;
 import com.connectsdk.service.DeviceService;
@@ -29,8 +31,6 @@ import com.connectsdk.service.capability.PlaylistControl;
 import com.connectsdk.service.capability.listeners.ResponseListener;
 import com.connectsdk.service.command.ServiceCommandError;
 import com.connectsdk.service.command.ServiceSubscription;
-
-import org.json.JSONObject;
 
 /**
  * ###Overview When a web app is launched on a first screen device, there are
@@ -505,4 +505,10 @@ public class WebAppSession implements MediaControl, MediaPlayer, PlaylistControl
         abstract public void onMessage(Object message);
     }
     // @endcond
+    
+	@Override
+	public void leaveMedia(LaunchSession launchSession,
+			ResponseListener<Object> listener) {
+		closeMedia(launchSession, listener);
+	}
 }
