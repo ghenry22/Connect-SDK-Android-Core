@@ -39,6 +39,7 @@ import java.net.InetAddress;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Timer;
@@ -132,8 +133,7 @@ public class SSDPDiscoveryProvider implements DiscoveryProvider {
         List<String> killKeys = new ArrayList<String>();
 
         long killPoint = new Date().getTime() - TIMEOUT;
-
-        for (String key : foundServices.keySet()) {
+        for (String key : Collections.list(foundServices.keys())) {
             ServiceDescription service = foundServices.get(key);
             if (service == null || service.getLastDetection() < killPoint) {
                 killKeys.add(key);
