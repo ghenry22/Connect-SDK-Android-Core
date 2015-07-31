@@ -111,7 +111,7 @@ public interface MediaControl extends CapabilityMethods {
          * @param playerState int value
          * @return PlayStateStatus
          */
-        public static PlayStateStatus convertPlayerStateToPlayStateStatus(int playerState) {
+        public static PlayStateStatus convertPlayerStateToPlayStateStatus(int playerState, int idleReason) {
             PlayStateStatus status = PlayStateStatus.Unknown;
 
             switch (playerState) {
@@ -119,7 +119,11 @@ public interface MediaControl extends CapabilityMethods {
                 status = PlayStateStatus.Buffering;
                 break;
             case PLAYER_STATE_IDLE:
-                status = PlayStateStatus.Finished;
+            	if (idleReason == 1) {
+                    status = PlayStateStatus.Finished;
+            	} else {
+                    status = PlayStateStatus.Idle;
+            	}
                 break;
             case PLAYER_STATE_PAUSED:
                 status = PlayStateStatus.Paused;
