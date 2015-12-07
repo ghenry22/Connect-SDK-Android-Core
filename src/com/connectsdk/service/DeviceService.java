@@ -446,6 +446,13 @@ public class DeviceService implements DeviceServiceReachabilityListener, Service
         return serviceDescription;
     }
 
+    //
+    public void addMessageReceiver(
+            final Object callback,
+            final String namespace) {
+    	
+    }
+
     // @cond INTERNAL
     public void setServiceConfig(ServiceConfig serviceConfig) {
         this.serviceConfig = serviceConfig;

@@ -5,7 +5,7 @@
 	
 	<groupId>com.connectsdk</groupId>
 	<artifactId>core</artifactId>
-	<version>1.0.2</version>
+	<version>1.0.3</version>
 	<packaging>apklib</packaging>
 	<name>connectsdk_core</name>
 
@@ -55,7 +55,7 @@
 		<dependency>
         	<groupId>com.connectsdk</groupId>
         	<artifactId>connectsdk</artifactId>
-        	<version>1.0.0</version>
+        	<version>1.0.1</version>
         	<type>apklib</type>        	      	
         </dependency> 
 
