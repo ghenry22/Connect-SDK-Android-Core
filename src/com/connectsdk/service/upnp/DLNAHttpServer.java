@@ -132,10 +132,10 @@ public class DLNAHttpServer {
             try {
                 outToClient = new DataOutputStream(connectionSocket.getOutputStream());
                 out = new PrintWriter(outToClient);
-                out.println("HTTP/1.1 200 OK");
-                out.println("Connection: Close");
-                out.println("Content-Length: 0");
-                out.println();
+                out.print("HTTP/1.1 200 OK" + "\r\n");
+                out.print("Connection: Close" + "\r\n");
+                out.print("Content-Length: 0" + "\r\n");
+                out.print("\r\n");
                 out.flush();
             } catch (IOException ex) {
                 ex.printStackTrace();
