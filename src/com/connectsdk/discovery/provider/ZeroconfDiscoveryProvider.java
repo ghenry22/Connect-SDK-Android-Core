@@ -47,6 +47,10 @@ import com.connectsdk.service.config.ServiceDescription;
 public class ZeroconfDiscoveryProvider implements DiscoveryProvider {
     private static final String HOSTNAME = "connectsdk";
 
+    private final static int RESCAN_INTERVAL = 10000;
+    private final static int RESCAN_ATTEMPTS = 6;
+    private final static int TIMEOUT = RESCAN_INTERVAL * RESCAN_ATTEMPTS;
+
     JmDNS jmdns;
     InetAddress srcAddress;
 
@@ -69,6 +73,7 @@ public class ZeroconfDiscoveryProvider implements DiscoveryProvider {
                 // Currently, we only support ipv4
                 return;
             }
+
 
             String friendlyName = ev.getInfo().getName();
             int port = ev.getInfo().getPort();
@@ -99,6 +104,8 @@ public class ZeroconfDiscoveryProvider implements DiscoveryProvider {
             if (foundService != null)
                 foundService.setLastDetection(new Date().getTime());
 
+            Log.e(Util.T, "serviceResolved:" + ipAddress + " " + foundService.toString());
+
             foundServices.put(ipAddress, foundService);
 
             if (listUpdateFlag) {
@@ -113,6 +120,8 @@ public class ZeroconfDiscoveryProvider implements DiscoveryProvider {
             @SuppressWarnings("deprecation")
             String uuid = ev.getInfo().getHostAddress();
             final ServiceDescription service = foundServices.get(uuid);
+
+            Log.e(Util.T ,"serviceRemoved: " + service.toString());
 
             if (service != null) {
                 Util.runOnUI(new Runnable() {

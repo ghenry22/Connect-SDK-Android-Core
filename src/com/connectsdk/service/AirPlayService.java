@@ -143,10 +143,12 @@ public class AirPlayService extends DeviceService implements MediaPlayer, MediaC
     public void stop(ResponseListener<Object> listener) {
         String uri = getRequestURL("stop");
 
+        Util.postError(listener, ServiceCommandError.getError(500));
+        
         ServiceCommand<ResponseListener<Object>> request = new ServiceCommand<ResponseListener<Object>>(this, uri, null, listener);
         // TODO This is temp fix for issue https://github.com/ConnectSDK/Connect-SDK-Android/issues/66
         request.send();
-        request.send();
+        //request.send();
         stopTimer();
     }
 
@@ -234,6 +236,15 @@ public class AirPlayService extends DeviceService implements MediaPlayer, MediaC
                         } else if (rate == 1) {
                             playState = PlayStateStatus.Playing;
                         }
+                        
+                        // check issues on some TV sets.
+                        int duration = response.getInt("duration");
+                        int position = response.getInt("position");
+                        if (position >= duration && duration > 0) {
+                            playState = PlayStateStatus.Finished;
+                        }
+                        
+                        Log.e("AirPlayService", "playState[" + playState + "]position[" + position + "]duration[" + duration + "]rate[" + rate+"]");
                     }
                     Util.postSuccess(listener, playState);
                 } catch (Exception e) {
@@ -466,6 +477,12 @@ public class AirPlayService extends DeviceService implements MediaPlayer, MediaC
             }
         };
 
+        // return LaunchSession to user ASAP!
+        LaunchSession launchSession = new LaunchSession();
+        launchSession.setService(AirPlayService.this);
+        launchSession.setSessionType(LaunchSessionType.WebApp);
+        Util.postSuccess(listener, new MediaLaunchObject(launchSession, AirPlayService.this));
+        
         String uri = getRequestURL("play");
         String payload = null;
 

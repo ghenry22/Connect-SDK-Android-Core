@@ -302,6 +302,12 @@ public class DLNAService extends DeviceService implements PlaylistControl, Media
             }
         };
 
+        // return LaunchSession to user ASAP!
+        LaunchSession launchSession = new LaunchSession();
+        launchSession.setService(DLNAService.this);
+        launchSession.setSessionType(LaunchSessionType.WebApp);
+        Util.postSuccess(listener, new MediaLaunchObject(launchSession, DLNAService.this, DLNAService.this));
+        
         String method = "SetAVTransportURI";
         String metadata = getMetadata(url, subtitle, mMimeType, title, description, iconSrc);
         if (metadata == null) {
@@ -1341,8 +1347,7 @@ public class DLNAService extends DeviceService implements PlaylistControl, Media
                 String currentVolume = parseData((String) response, "CurrentVolume");
                 int iVolume = 0;
                 try {
-                    //noinspection ResultOfMethodCallIgnored
-                    Integer.parseInt(currentVolume);
+                    iVolume = Integer.parseInt(currentVolume);
                 } catch (RuntimeException ex) {
                     ex.printStackTrace();
                 }

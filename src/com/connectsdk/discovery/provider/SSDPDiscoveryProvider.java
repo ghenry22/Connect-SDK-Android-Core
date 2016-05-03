@@ -296,6 +296,13 @@ public class SSDPDiscoveryProvider implements DiscoveryProvider {
         if (ssdpPacket == null || ssdpPacket.getData().size() == 0 || ssdpPacket.getType() == null)
             return;
 
+//        Log.d("Connect SDK Socket", "Packet received | type = " + ssdpPacket.getType());
+//
+//        for (String key : ssdpPacket.getData().keySet()) {
+//            Log.d("Connect SDK Socket", "    " + key + " = " + ssdpPacket.getData().get(key));
+//        }
+//        Log.d("Connect SDK Socket", "__________________________________________");
+
         String serviceFilter = ssdpPacket.getData().get(ssdpPacket.getType().equals(SSDPClient.NOTIFY) ? "NT" : "ST");
 
         if (serviceFilter == null || SSDPClient.MSEARCH.equals(ssdpPacket.getType()) || !isSearchingForFilter(serviceFilter))
@@ -317,6 +324,7 @@ public class SSDPDiscoveryProvider implements DiscoveryProvider {
             final ServiceDescription service = foundServices.get(uuid);
 
             if (service != null) {
+                Log.e(Util.T, "handleSSDPPacket: remove device:" + service.toString());
                 foundServices.remove(uuid);
 
                 notifyListenersOfLostService(service);
@@ -340,6 +348,8 @@ public class SSDPDiscoveryProvider implements DiscoveryProvider {
                 foundService.setPort(3001);
 
                 discoveredServices.put(uuid, foundService);
+
+                Log.e(Util.T, "handleSSDPPacket: add device:" + foundService.toString());
 
                 getLocationData(location, uuid, serviceFilter);
             }

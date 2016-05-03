@@ -315,7 +315,7 @@ public class DiscoveryManager implements ConnectableDeviceListener, DiscoveryPro
 
         for (ConnectableDevice device: allDevices.values()) {
             if (deviceIsCompatible(device)) {
-                compatibleDevices.put(device.getIpAddress(), device);
+                compatibleDevices.put(device.getFriendlyName() != null? device.getFriendlyName():"" + device.getIpAddress(), device);
 
                 handleDeviceAdd(device);
             }
@@ -520,6 +520,7 @@ public class DiscoveryManager implements ConnectableDeviceListener, DiscoveryPro
                 NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 
                 if (mWifi.isConnected()) {
+
                     for (DiscoveryProvider provider : discoveryProviders) {
                         provider.start();
                     }
@@ -550,6 +551,10 @@ public class DiscoveryManager implements ConnectableDeviceListener, DiscoveryPro
 
         for (DiscoveryProvider provider : discoveryProviders) {
             provider.stop();
+        }
+
+        if (discoveryListeners != null) {
+            discoveryListeners.clear();
         }
 
         if (multicastLock.isHeld()) {
@@ -588,7 +593,7 @@ public class DiscoveryManager implements ConnectableDeviceListener, DiscoveryPro
         if (!deviceIsCompatible(device)) 
             return;
 
-        compatibleDevices.put(device.getIpAddress(), device);
+        compatibleDevices.put(device.getFriendlyName() != null? device.getFriendlyName():"" + device.getIpAddress(), device);
 
         for (DiscoveryManagerListener listenter: discoveryListeners) {
             listenter.onDeviceAdded(this, device);
@@ -597,7 +602,7 @@ public class DiscoveryManager implements ConnectableDeviceListener, DiscoveryPro
 
     public void handleDeviceUpdate(ConnectableDevice device) {
         if (deviceIsCompatible(device)) {
-            if (device.getIpAddress() != null && compatibleDevices.containsKey(device.getIpAddress())) {
+            if (device.getIpAddress() != null && compatibleDevices.containsKey(device.getFriendlyName() != null? device.getFriendlyName():""  + device.getIpAddress())) {
                 for (DiscoveryManagerListener listenter: discoveryListeners) {
                     listenter.onDeviceUpdated(this, device);
                 }
@@ -607,7 +612,7 @@ public class DiscoveryManager implements ConnectableDeviceListener, DiscoveryPro
             }
         }
         else {
-            compatibleDevices.remove(device.getIpAddress());
+            compatibleDevices.remove(device.getFriendlyName()!= null?device.getFriendlyName():"" + device.getIpAddress());
             handleDeviceLoss(device);
         }
     }
@@ -712,9 +717,9 @@ public class DiscoveryManager implements ConnectableDeviceListener, DiscoveryPro
 
     @Override
     public void onServiceAdded(DiscoveryProvider provider, ServiceDescription serviceDescription) {
-        Log.d(Util.T, "Service added: " + serviceDescription.getFriendlyName() + " (" + serviceDescription.getServiceID() + ")");
+        Log.e(Util.T, "Service added: " + serviceDescription.getFriendlyName() + " (" + serviceDescription.getServiceID() + ")");
 
-        boolean deviceIsNew = !allDevices.containsKey(serviceDescription.getIpAddress());
+        boolean deviceIsNew = !allDevices.containsKey(serviceDescription.getFriendlyName() != null? serviceDescription.getFriendlyName():"" + serviceDescription.getIpAddress());
         ConnectableDevice device = null;
 
         if (deviceIsNew) {
@@ -722,18 +727,18 @@ public class DiscoveryManager implements ConnectableDeviceListener, DiscoveryPro
                 device = connectableDeviceStore.getDevice(serviceDescription.getUUID());
 
                 if (device != null) {
-                    allDevices.put(serviceDescription.getIpAddress(), device);
+                    allDevices.put(serviceDescription.getFriendlyName() != null?serviceDescription.getFriendlyName():"" + serviceDescription.getIpAddress(), device);
                     device.setIpAddress(serviceDescription.getIpAddress());
                 }
             }
         } else {
-            device = allDevices.get(serviceDescription.getIpAddress());
+            device = allDevices.get(serviceDescription.getFriendlyName() != null? serviceDescription.getFriendlyName():"" + serviceDescription.getIpAddress());
         }
 
         if (device == null) {
             device = new ConnectableDevice(serviceDescription);
             device.setIpAddress(serviceDescription.getIpAddress());
-            allDevices.put(serviceDescription.getIpAddress(), device);
+            allDevices.put(serviceDescription.getFriendlyName() != null? serviceDescription.getFriendlyName():"" + serviceDescription.getIpAddress(), device);
             deviceIsNew = true;
         }
 
@@ -748,7 +753,7 @@ public class DiscoveryManager implements ConnectableDeviceListener, DiscoveryPro
         if (device.getServices().size() == 0) {
             // we get here when a non-LG DLNA TV is found
 
-            allDevices.remove(serviceDescription.getIpAddress());
+            allDevices.remove(serviceDescription.getFriendlyName() != null? serviceDescription.getFriendlyName():"" + serviceDescription.getIpAddress());
 
             return;
         }
@@ -767,15 +772,15 @@ public class DiscoveryManager implements ConnectableDeviceListener, DiscoveryPro
             return;
         }
 
-        Log.d(Util.T, "onServiceRemoved: friendlyName: " + serviceDescription.getFriendlyName());
+        Log.e(Util.T, "onServiceRemoved: friendlyName: " + serviceDescription.getFriendlyName());
 
-        ConnectableDevice device = allDevices.get(serviceDescription.getIpAddress());
+        ConnectableDevice device = allDevices.get(serviceDescription.getFriendlyName() != null? serviceDescription.getFriendlyName():"" + serviceDescription.getIpAddress());
 
         if (device != null) { 
             device.removeServiceWithId(serviceDescription.getServiceID());
 
             if (device.getServices().isEmpty()) {
-                allDevices.remove(serviceDescription.getIpAddress());
+                allDevices.remove(serviceDescription.getFriendlyName() != null? serviceDescription.getFriendlyName():"" + serviceDescription.getIpAddress());
 
                 handleDeviceLoss(device);
             }
