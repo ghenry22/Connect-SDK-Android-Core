@@ -20,6 +20,14 @@
 
 package com.connectsdk.discovery.provider.ssdp;
 
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.text.TextUtils;
+import android.util.Log;
+
+import com.connectsdk.BuildConfig;
+import com.connectsdk.core.Util;
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -66,6 +74,11 @@ public class SSDPClient {
     int timeout = 0;
     static int MX = 5;
 
+    private static HandlerThread HANDLER = new HandlerThread("join_thread");
+    static {
+        HANDLER.start();
+    }
+
     public SSDPClient(InetAddress source) throws IOException {
         this(source, new MulticastSocket(PORT), new MulticastSocket(null));
     }
@@ -77,8 +90,27 @@ public class SSDPClient {
 
         multicastGroup = new InetSocketAddress(MULTICAST_ADDRESS, PORT);
         networkInterface = NetworkInterface.getByInetAddress(localInAddress);
-        multicastSocket.joinGroup(multicastGroup, networkInterface);
+        joinGroup();
+        bind();
+    }
 
+    private void joinGroup() {
+        Handler joinHandler = new Handler(HANDLER.getLooper());
+        joinHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    multicastSocket.joinGroup(multicastGroup, networkInterface);
+                } catch (IOException e) {
+                    if (BuildConfig.DEBUG && !TextUtils.isEmpty(e.getMessage())) {
+                        Log.i(Util.T, e.getMessage());
+                    }
+                }
+            }
+        });
+    }
+
+    private void bind() throws SocketException {
         datagramSocket.setReuseAddress(true);
         datagramSocket.setTimeToLive(4);
         datagramSocket.bind(new InetSocketAddress(localInAddress, 0));
@@ -133,7 +165,6 @@ public class SSDPClient {
         }
 
         if (datagramSocket != null) {
-            datagramSocket.disconnect();
             datagramSocket.close();
         }
     }
